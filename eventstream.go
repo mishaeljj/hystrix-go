@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/afex/hystrix-go/hystrix/rolling"
+	"github.com/mishaeljj/hystrix-go/rolling"
 )
 
 const (
@@ -71,10 +71,10 @@ func (sh *StreamHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 }
 
 func (sh *StreamHandler) loop() {
-	tick := time.Tick(1 * time.Second)
+	tick := time.NewTicker(1 * time.Second)
 	for {
 		select {
-		case <-tick:
+		case <-tick.C:
 			circuitBreakersMutex.RLock()
 			for _, cb := range circuitBreakers {
 				sh.publishMetrics(cb)
@@ -170,7 +170,7 @@ func (sh *StreamHandler) publishThreadPools(pool *executorPool) error {
 	}
 	err = sh.writeToRequests(eventBytes)
 
-	return nil
+	return err
 }
 
 func (sh *StreamHandler) writeToRequests(eventBytes []byte) error {

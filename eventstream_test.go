@@ -44,7 +44,7 @@ func sleepingCommand(t *testing.T, name string, duration time.Duration) {
 	}, nil)
 
 	select {
-	case _ = <-done:
+	case <-done:
 		// do nothing
 	case err := <-errChan:
 		t.Fatal(err)
@@ -59,9 +59,9 @@ func failingCommand(t *testing.T, name string, duration time.Duration) {
 	}, nil)
 
 	select {
-	case _ = <-done:
+	case <-done:
 		t.Fatal("should not have succeeded")
-	case _ = <-errChan:
+	case <-errChan:
 		// do nothing
 	}
 }
@@ -136,7 +136,7 @@ func streamMetrics(t *testing.T, url string) (chan string, chan bool) {
 			}
 
 			select {
-			case _ = <-done:
+			case <-done:
 				close(metrics)
 				return
 			default:
